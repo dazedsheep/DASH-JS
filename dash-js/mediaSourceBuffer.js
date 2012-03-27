@@ -29,6 +29,7 @@ function mediaSourceBuffer()
 	this._eventHandlers = new Object();
 	this._eventHandlers.cnt = 0;
 	this._eventHandlers.handlers = new Array();
+    this.lastTime = 0;
 }
 
 
@@ -80,23 +81,27 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 	mediaSourceBuffer.prototype.push = function(segmentDuration)
 	{
 		// before using this function, please check whether the buffer can take the actual segment
-		if(this.getFillLevel() <= 1.0){
+		/*if(this.getFillLevel() <= 1.0){
 			
 			this.fillState.seconds += segmentDuration;
 			
 		}
 		else
-			return -1;	
+			return -1;*/
+        
+        _mediaSourceBuffer.fillState.seconds = _mediaSourceBuffer.videoElement.buffered.end(0) - _mediaSourceBuffer.videoElement.currentTime;
+        
 	}	
 	
+    
 	
 	mediaSourceBuffer.prototype.refill = function(object){
 		console.log("Overlay buffer...");
 		console.log("Fill state of overlay buffer: " + object.fillState.seconds);
 		console.log(object);
 		
-		_dashFetchSegmentAsynchron(0,0);	
-		object.push(2);	
+		_dashFetchSegmentAsynchron(0,object.push);	
+		//object.push(2);	
 		object.callEventHandlers();
 		
 		

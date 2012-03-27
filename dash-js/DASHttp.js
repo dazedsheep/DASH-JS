@@ -96,6 +96,7 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer, call
 		myBandwidth.calcWeightedBandwidth(parseInt(mybps));
 		adaptation.switchRepresentation();
 		video.webkitSourceAppend(data);
+        if(callback != 0) callback(2);
 		if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
 	
 		
