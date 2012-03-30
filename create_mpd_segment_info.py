@@ -1,9 +1,7 @@
-/*
- * Based on python-ebml and the example of Carson McDonald
- *
- * Created by Benjamin Rainer and Stefan Lederer
- *
- */
+#
+#Based on python-ebml and the example of Carson McDonald
+#
+#Created by Benjamin Rainer and Stefan Lederer
 
 previous_offset = 0
 video_file = ""
