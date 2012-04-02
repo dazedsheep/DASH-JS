@@ -50,7 +50,7 @@ function baseBuffer()
 	this.buffer.first = 0;
 	this.buffer.last = 0;
 	this.buffer.size = 0;
-	
+	this.streamEnded = false;
 	this.isOverlayBuffer = false;		// Overlay buffers are only used to mimic the behaviour of an HTML element or a video player where we have no access to the buffer of the unit
 }
 
@@ -82,46 +82,53 @@ baseBuffer.prototype.callEvent = function(event,data)
 }
 
 
-baseBuffer.prototype.drain = function(dimension,amount,object)
+baseBuffer.prototype.drain = function(dimension,amount)
 {
 	//console.log("Draining buffer: " + object);
 	if(dimension == "bytes")
 	{
-		this.fillState.bytes -= amount;
-		if(this.fillState.bytes <= this.criticalState.bytes) this.callEvent("minimumLevel");
-		else
-			if(!this.isOverlayBuffer) _push_segment_to_media_source_api(this.get());
-				
 		
-	}
+		if(this.fillState.bytes <= this.criticalState.bytes && !this.streamEnded)
+        {
+            this.callEvent("minimumLevel");
+            return 0;
+        }else{
+            this.fillState.bytes -= amount;
+            return this.get();
+            
+        }
+    }
 	
 	if(dimension == "seconds")
 	{
-		
-			console.log("Need Segments ... ");
-			console.log(object);
-			this.callEvent("minimumLevel",object);
-			
-		
-			this.fillState.seconds -= amount;
-			if(!this.isOverlayBuffer) _push_segment_to_media_source_api(this.get());
-		
-	}	
+		 console.log("fill: "+ this.fillState.seconds + " crit: "+ this.criticalState.seconds);
+		if(this.fillState.seconds <= this.criticalState.seconds && !this.streamEnded) 
+        {
+            this.callEvent("minimumLevel");
+            return 0;
+        }else{
+           
+            this.fillState.seconds -= amount;
+            return this.get();
+            
+        }
+    }	    
+    return 0;
 }
 
-baseBuffer.prototype.state = function(dimension) {	//return buffer fill level in percent, normalized from 0 to 1.0
+baseBuffer.prototype.state = function(dimension) {	//return buffer fill level in percent
 
 	if(dimension == "bytes")
 	{
 	
-		return (this.fillState.bytes / this.bufferSize.maxbytes);
+		return (this.fillState.bytes / this.bufferSize.maxbytes)*100;
 		
 	}
 	
 	if(dimension == "seconds")
 	{
 		
-		return (this.fillState.seconds / this.bufferSize.maxseconds);
+		return (this.fillState.seconds / this.bufferSize.maxseconds)*100;
 	}
 	
 	return -1;

@@ -44,37 +44,20 @@ function init_timeBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 			//setTimeout(function(){_timeBuffer.bufferStateListener(object)},100);	
 		}
 	
-timeBuffer.prototype.predictFillLevel = function(segmentDuration)
-{
-/*	console.log(this.fillState.seconds);
-	console.log(this.bufferSize.maxseconds);
-	console.log("prediction: " +((this.fillState.seconds + segmentDuration) / this.bufferSize.maxseconds));*/
-	if (((this.fillState.seconds + segmentDuration) / this.bufferSize.maxseconds) >= 1.0) return -1;
-	else
-		return 0;
-}
+    timeBuffer.prototype.getFillLevel = function()
+    {
+        return this.state("seconds");
+    }
 
-timeBuffer.prototype.getFillLevel = function()
-{
-	return this.state("seconds");
-}
-
-timeBuffer.prototype.push = function(segment, segmentDuration)
-{
-	// before using this function, please check whether the buffer can take the actual segment
-	//if(this.getFillLevel() <= 1.0){
-		this.add(segment);
+    timeBuffer.prototype.push = function(segment, segmentDuration)
+    {
+ 		this.add(segment);
 		this.fillState.seconds += segmentDuration;
-	//}else{
-		return -1;	
-//	}
-}	
+    }	
 
 		
 	timeBuffer.prototype.refill = function(object){
-		console.log("Refill event of time based buffer got called.");
-		//console.log(object.predictFillLevel(2));
-		console.log(object);
+        console.log(object);
 		console.log(object.predictFillLevel(2));
 		console.log(object.fillState.seconds);
 		if(object.predictFillLevel(2) == 0)
@@ -87,8 +70,8 @@ timeBuffer.prototype.push = function(segment, segmentDuration)
 			_push_segment_to_medie_source_api(object.get());
 		}*/
 	}
+    
 	_timeBuffer = new timeBuffer();
-	
 	_timeBuffer.criticalState.seconds = criticalLevel;
 	_timeBuffer.bufferSize.maxseconds = buffersize;
 	_timeBuffer.mediaAPI = mediaAPI;

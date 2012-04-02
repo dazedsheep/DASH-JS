@@ -24,12 +24,16 @@
 var _mediaSourceBuffer;
 
 
+
 function mediaSourceBuffer()
 {
 	this._eventHandlers = new Object();
 	this._eventHandlers.cnt = 0;
 	this._eventHandlers.handlers = new Array();
+    this.mediaElementBuffered = 0;
     this.lastTime = 0;
+    this.fill = false;
+    this.doRefill = false;
 }
 
 
@@ -52,25 +56,62 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 		for(i=0;i<this._eventHandlers.cnt; i++) 
 		{
 			this._eventHandlers.handlers[i].fn(this.getFillLevel(),this.fillState.seconds, this.bufferSize.maxseconds);
-			
-		}
+        }
 	}
 	
 	mediaSourceBuffer.prototype.bufferStateListener = function(object){
 		
-		//console.log("checking playback state, passed time: " + (_mediaSourceBuffer.videoElement.currentTime - _mediaSourceBuffer.lastTime));
-		_mediaSourceBuffer.drain("seconds",_mediaSourceBuffer.videoElement.currentTime - _mediaSourceBuffer.lastTime,object); 
-		_mediaSourceBuffer.lastTime = _mediaSourceBuffer.videoElement.currentTime;
-		//	if(object.videoElement.webkitSourceState != HTMLMediaElement.SOURCE_ENDED) setTimeout(function(){_mediaSourceBuffer.bufferStateListener(object)},100);	
+        // check whether the media element can take chunks ...
+        // first call?
+        
+        object.mediaElementBuffered -= dashPlayer.videoTag.currentTime - object.lastTime;
+        if(object.mediaElementBuffered < 2) {
+            //console.log("media element needs DATA!");
+            rc = object.drain("seconds",2);
+            //console.log(rc);
+            if (rc != 0)
+            {
+              
+                _push_segment_to_media_source_api(rc);
+                this.mediaElementBuffered += 2;
+
+            }
+            
+        } 
+        object.lastTime = dashPlayer.videoTag.currentTime;
+      
+        window.setTimeout(function () {_mediaSourceBuffer.bufferStateListener(_mediaSourceBuffer);},100);
+			
 	}
-	mediaSourceBuffer.prototype.predictFillLevel = function(segmentDuration)
+    
+    mediaSourceBuffer.prototype.callback = function(){
+       // console.log("State of video element: " + dashPlayer.videoTag.readyState);
+      //  if(dashPlayer.videoTag.readyState < 4)
+      //  {
+            
+            // drain ...
+          
+         //   this.fillState.seconds -= 2;
+           // _push_segment_to_media_source_api(this.get());
+                       
+       // }
+        
+        window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},0,true);
+        
+        
+    }
+    
+	mediaSourceBuffer.prototype.signalRefill = function()
 	{
-		/*	console.log(this.fillState.seconds);
-		 console.log(this.bufferSize.maxseconds);
-		 console.log("prediction: " +((this.fillState.seconds + segmentDuration) / this.bufferSize.maxseconds));*/
-		if (((this.fillState.seconds + segmentDuration) / this.bufferSize.maxseconds) > 1.0) return -1;
-		else
-			return 0;
+        
+		if(_mediaSourceBuffer.doRefill == false)
+        {   
+            console.log("signaling refill");
+            _mediaSourceBuffer.doRefill = true;
+            _mediaSourceBuffer.refill(_mediaSourceBuffer);
+          
+          //  window.setTimeout(function() {_mediaSourceBuffer.refill(_mediaSourceBuffer); }, 0);
+        }
 	}
 	
 	mediaSourceBuffer.prototype.getFillLevel = function()
@@ -78,32 +119,37 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 		return this.state("seconds");
 	}
 	
-	mediaSourceBuffer.prototype.push = function(segmentDuration)
+	mediaSourceBuffer.prototype.push = function(data,segmentDuration)
 	{
-		// before using this function, please check whether the buffer can take the actual segment
-		/*if(this.getFillLevel() <= 1.0){
-			
-			this.fillState.seconds += segmentDuration;
-			
-		}
-		else
-			return -1;*/
-        
-        _mediaSourceBuffer.fillState.seconds = _mediaSourceBuffer.videoElement.buffered.end(0) - _mediaSourceBuffer.videoElement.currentTime;
-        
+		
+        _mediaSourceBuffer.fillState.seconds += segmentDuration;
+        _mediaSourceBuffer.add(data);
 	}	
 	
     
 	
 	mediaSourceBuffer.prototype.refill = function(object){
-		console.log("Overlay buffer...");
-		console.log("Fill state of overlay buffer: " + object.fillState.seconds);
-		console.log(object);
 		
-		_dashFetchSegmentAsynchron(0,object.push);	
-		//object.push(2);	
-		object.callEventHandlers();
+        if(object.doRefill == true){
+        
+            if(object.fillState.seconds < object.bufferSize.maxseconds){
+        
+                console.log("Overlay buffer...");
+                console.log(object);
+                console.log("Fill state of overlay buffer: " + object.fillState.seconds);
 		
+		
+                _dashFetchSegmentAsynchron(object);	
+		
+                object.callEventHandlers();
+            }else{
+                object.doRefill = false;
+            }
+		}else{
+            
+            //window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},10,true);
+            
+        }
 		
 	}
 	
@@ -114,12 +160,11 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 	_mediaSourceBuffer.isOverlayBuffer = true;
 	_mediaSourceBuffer.criticalState.seconds = criticalLevel;
 	_mediaSourceBuffer.bufferSize.maxseconds = buffersize;
+    _mediaSourceBuffer.initBufferArray("seconds",2);
 	_mediaSourceBuffer.mediaAPI = mediaAPI;
 	_mediaSourceBuffer.videoElement = videoElement;
 	_mediaSourceBuffer.lastTime = 0;
-	
-//	setTimeout(function(){_mediaSourceBuffer.bufferStateListener(_mediaSourceBuffer)},100);	// check every 100ms how much of the buffer was drained
-	_mediaSourceBuffer.registerEventHandler("minimumLevel", _mediaSourceBuffer.refill);
+	_mediaSourceBuffer.registerEventHandler("minimumLevel", _mediaSourceBuffer.signalRefill);
 	
 	return _mediaSourceBuffer;
 }

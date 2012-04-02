@@ -32,8 +32,17 @@ function DASHttp()
 	
 }
 
+function _push_segment_to_media_source_api(data)
+{
+    // check whether the buffer is ready to take the segment ...
+    
+       
+    dashPlayer.videoTag.webkitSourceAppend(data);
+        
+    
+}
 
- function _fetch_segment(presentation, url, video, range)
+function _fetch_segment(presentation, url, video, range)
 {
 	console.log('DASH JS Client fetching segment: ' + url);
 	var xhr = new XMLHttpRequest();
@@ -45,35 +54,36 @@ function DASHttp()
 		xhr.setRequestHeader('Range', 'bytes='+range);
 		console.log('DASH JS Client fetching byte range: ' + range);
 	}
-
+    
 	xhr.responseType = 'arraybuffer';
-			
+    
 	//_tmpvideo = video;
 	xhr.onload = function(e)
-		{
-				
-			data = new Uint8Array(this.response);
-			mybps = endBitrateMeasurementByID(this.timeID,data.length);
-			myBandwidth.calcWeightedBandwidth(parseInt(mybps));
-			adaptation.switchRepresentation();
-			dashPlayer.videoTag.webkitSourceAppend(data);
-			if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
-				
-		};
+    {
+        
+        data = new Uint8Array(this.response);
+        mybps = endBitrateMeasurementByID(this.timeID,data.length);
+        myBandwidth.calcWeightedBandwidth(parseInt(mybps));
+        adaptation.switchRepresentation();
+        dashPlayer.videoTag.webkitSourceAppend(data);
+        if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
+        
+    };
 	
 	beginBitrateMeasurementByID(this._timeID);
 	_timeID++;
 	xhr.send();
 }
 
-function _push_segment_to_medie_source_api(segment)
-{
-	 adaptation.mediaElement.webkitSourceAppend(segment);
-}
 
-function _fetch_segment_for_buffer(presentation, url, video, range, buffer, callback)
+function _fetch_segment_for_buffer(presentation, url, video, range, buffer)
 {
-	console.log('DASH JS Client fetching segment: ' + url);
+	if(presentation.curSegment >= presentation.segmentList.segments) 
+    {
+        dashPlayer.videoTag.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
+        return;
+    }
+    console.log('DASH JS Client fetching segment: ' + url);
 	var xhr = new XMLHttpRequest();
 	xhr.timeID = _timeID;
 	xhr.open('GET', url, true);
@@ -85,7 +95,6 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer, call
 	}
 	
 	xhr.responseType = 'arraybuffer';
-	xhr.callback = callback;
 	xhr.buffer = buffer;
 	//_tmpvideo = video;
 	xhr.onload = function(e)
@@ -94,11 +103,15 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer, call
 		data = new Uint8Array(this.response);
 		mybps = endBitrateMeasurementByID(this.timeID,data.length);
 		myBandwidth.calcWeightedBandwidth(parseInt(mybps));
-		adaptation.switchRepresentation();
-		video.webkitSourceAppend(data);
-        if(callback != 0) callback(2);
-		if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
-	
+        
+		adaptation.switchRepresentation();      // <--- mod this, if you wanna change the adaptation behavior ... (e. g., include buffer state, ...)
+        
+        // push the data into our buffer
+        buffer.push(data,2);
+        
+        if(presentation.curSegment >= presentation.segmentList.segments-1) buffer.streamEnded = true;
+        
+        buffer.callback();
 		
 	};
 	
@@ -133,39 +146,19 @@ function _dashSourceOpen(presentation, video)
 	}
 			
 }
-		
-function _dashFetchSegment(presentation, video)
-{
-			
-	_fetch_segment(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range);
-	presentation.curSegment++;
 
-}
-
-function _dashFetchSegmentBuffer(presentation, video, buffer, callback)
+function _dashFetchSegmentBuffer(presentation, video, buffer)
 {
 	
-	_fetch_segment_for_buffer(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer, callback);
+	_fetch_segment_for_buffer(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
 	presentation.curSegment++;
 	
 }
-		
-function _dashFetchSegment_sync(presentation, video, buffer, callback)
-{
-			
-	_fetch_segment_sync(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range);
-	presentation.curSegment++;
 
-}
-
-function _dashFetchSegmentSynchronized()
-{
-	_dashFetchSegment_sync(adaptation.currentRepresentation, adaptation.mediaElement);
-}
 
 function _dashFetchSegmentAsynchron(buffer, callback)
 {
-	_dashFetchSegmentBuffer(adaptation.currentRepresentation, adaptation.mediaElement, buffer, callback);
+	_dashFetchSegmentBuffer(adaptation.currentRepresentation, adaptation.mediaElement, buffer);
 }
  
  
