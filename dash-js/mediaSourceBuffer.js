@@ -72,7 +72,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
                 // signal that we are done!
                 
                 dashPlayer.videoTag.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
-                
+                return;
             }
             
             if (rc != 0)
