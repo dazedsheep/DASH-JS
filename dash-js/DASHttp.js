@@ -78,11 +78,6 @@ function _fetch_segment(presentation, url, video, range)
 
 function _fetch_segment_for_buffer(presentation, url, video, range, buffer)
 {
-	if(presentation.curSegment >= presentation.segmentList.segments) 
-    {
-        dashPlayer.videoTag.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
-        return;
-    }
     console.log('DASH JS Client fetching segment: ' + url);
 	var xhr = new XMLHttpRequest();
 	xhr.timeID = _timeID;
@@ -149,7 +144,9 @@ function _dashSourceOpen(presentation, video)
 
 function _dashFetchSegmentBuffer(presentation, video, buffer)
 {
-	
+	if(presentation.curSegment >= presentation.segmentList.segments-1) {
+        return; 
+    }
 	_fetch_segment_for_buffer(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
 	presentation.curSegment++;
 	

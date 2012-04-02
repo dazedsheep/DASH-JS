@@ -87,7 +87,7 @@ baseBuffer.prototype.drain = function(dimension,amount)
 	//console.log("Draining buffer: " + object);
 	if(dimension == "bytes")
 	{
-		
+		if(this.fillState.bytes == 0 && this.streamEnded) return -1;
 		if(this.fillState.bytes <= this.criticalState.bytes && !this.streamEnded)
         {
             this.callEvent("minimumLevel");
@@ -101,8 +101,9 @@ baseBuffer.prototype.drain = function(dimension,amount)
 	
 	if(dimension == "seconds")
 	{
-		 console.log("fill: "+ this.fillState.seconds + " crit: "+ this.criticalState.seconds);
-		if(this.fillState.seconds <= this.criticalState.seconds && !this.streamEnded) 
+		
+		if(this.fillState.seconds == 0 && this.streamEnded) return -1;
+        if(this.fillState.seconds <= this.criticalState.seconds && !this.streamEnded) 
         {
             this.callEvent("minimumLevel");
             return 0;

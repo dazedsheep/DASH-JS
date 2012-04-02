@@ -61,14 +61,12 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 	
 	mediaSourceBuffer.prototype.bufferStateListener = function(object){
 		
-        // check whether the media element can take chunks ...
-        // first call?
-        
         object.mediaElementBuffered -= dashPlayer.videoTag.currentTime - object.lastTime;
+        
         if(object.mediaElementBuffered < 2) {
-            //console.log("media element needs DATA!");
+           
             rc = object.drain("seconds",2);
-            //console.log(rc);
+            
             if (rc != 0)
             {
               
@@ -77,6 +75,15 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 
             }
             
+            if (rc == -1)
+            {
+                // signal that we are done!
+                
+                 dashPlayer.videoTag.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
+                
+            }
+            
+            
         } 
         object.lastTime = dashPlayer.videoTag.currentTime;
       
@@ -84,17 +91,8 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 			
 	}
     
+    // this is the callback method, called by the AJAX xmlhttp call
     mediaSourceBuffer.prototype.callback = function(){
-       // console.log("State of video element: " + dashPlayer.videoTag.readyState);
-      //  if(dashPlayer.videoTag.readyState < 4)
-      //  {
-            
-            // drain ...
-          
-         //   this.fillState.seconds -= 2;
-           // _push_segment_to_media_source_api(this.get());
-                       
-       // }
         
         window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},0,true);
         
@@ -108,9 +106,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
         {   
             console.log("signaling refill");
             _mediaSourceBuffer.doRefill = true;
-            _mediaSourceBuffer.refill(_mediaSourceBuffer);
-          
-          //  window.setTimeout(function() {_mediaSourceBuffer.refill(_mediaSourceBuffer); }, 0);
+            _mediaSourceBuffer.refill(_mediaSourceBuffer);  // asynch ... we will only dive once into this method
         }
 	}
 	
@@ -145,12 +141,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
             }else{
                 object.doRefill = false;
             }
-		}else{
-            
-            //window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},10,true);
-            
-        }
-		
+		}
 	}
 	
 	
