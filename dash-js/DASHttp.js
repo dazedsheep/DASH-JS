@@ -32,13 +32,12 @@ function DASHttp()
 	
 }
 
+
+// this method is used by the mediaSourceBuffer to push segments in
 function _push_segment_to_media_source_api(data)
 {
-    // check whether the buffer is ready to take the segment ...
-    
-       
+          
     dashPlayer.videoTag.webkitSourceAppend(data);
-        
     
 }
 
@@ -49,7 +48,7 @@ function _fetch_segment(presentation, url, video, range)
 	xhr.timeID = _timeID;
 	xhr.open('GET', url, true);
 	xhr.setRequestHeader('Cache-Control', _cacheControl);
-	if(range != -1)
+	if(range != 'undefined')
 	{
 		xhr.setRequestHeader('Range', 'bytes='+range);
 		console.log('DASH JS Client fetching byte range: ' + range);
@@ -83,7 +82,7 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer)
 	xhr.timeID = _timeID;
 	xhr.open('GET', url, true);
 	xhr.setRequestHeader('Cache-Control', _cacheControl);
-	if(range != -1)
+	if(range != 'undefined')
 	{
 		xhr.setRequestHeader('Range', 'bytes='+range);
 		console.log('DASH JS Client fetching byte range: ' + range);
@@ -127,15 +126,15 @@ function _dashSourceOpen(presentation, video)
 	video.height = presentation.height;
 	if(presentation.hasInitialSegment == false)
 	{
-			
-		_fetch_segment(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range);
+        baseURL = presentation.baseURL;
+		_fetch_segment(presentation, (baseURL != 'undefined' ? presentation.baseURL : '') + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range);
 	
 		if(presentation.curSegment > 0 ) presentation.curSegment = 1;
 		presentation.curSegment++;
 				
 	}else{
-		
-		_fetch_segment(presentation, presentation.baseURL + adaptation.getInitialChunk(presentation).src, video, adaptation.getInitialChunk(presentation).range);
+		baseURL = presentation.baseURL;
+		_fetch_segment(presentation, (baseURL != 'undefined' ? presentation.baseURL : '') + adaptation.getInitialChunk(presentation).src, video, adaptation.getInitialChunk(presentation).range);
 		//presentation.curSegment++;
 
 	}
@@ -147,7 +146,8 @@ function _dashFetchSegmentBuffer(presentation, video, buffer)
 	if(presentation.curSegment >= presentation.segmentList.segments-1) {
         return; 
     }
-	_fetch_segment_for_buffer(presentation, presentation.baseURL + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
+    baseURL = presentation.baseURL;
+	_fetch_segment_for_buffer(presentation, (baseURL != 'undefined' ? presentation.baseURL : '') + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
 	presentation.curSegment++;
 	
 }

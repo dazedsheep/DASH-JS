@@ -15,7 +15,7 @@ function DASH_MPD_loaded()
 	//dashInstance.videoTag.addEventListener('progress', onProgress, false); - not needed anymore, due to the changes to the Media Source API
 	dashInstance.videoTag.addEventListener('webkitsourceopen', onOpenSource, false);
 	dashInstance.videoTag.addEventListener('webkitsourceended', onSourceEnded);
-	overlayBuffer = init_mediaSourceBuffer(10,30,0,dashInstance.videoTag);
+	overlayBuffer = init_mediaSourceBuffer(20,30,0,dashInstance.videoTag);
 	overlayBuffer.addEventHandler(function(fillpercent, fillinsecs, max){ console.log("Event got called from overlay buffer, fillstate(%) = " + fillpercent + ", fillstate(s) = " + fillinsecs + ", max(s) = " + max); });
 }
 
