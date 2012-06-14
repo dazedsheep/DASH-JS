@@ -60,6 +60,13 @@ fPlot.prototype.initNewFunction = function (type) {
 
 }
 
+fPlot.prototype.updateOnlyPlaybackTime = function(value, type)
+{
+    
+    
+    
+}
+
 fPlot.prototype.update = function(value, type)
 {
 	this.f[type].values[this.f[type].cnt] = value;	
@@ -85,10 +92,11 @@ fPlot.prototype.plot = function()
 	
 		for(var i=0;i<this.f[n].values.length;i++)
 		{
-			if((this.f[n].values[i]/1024) > maxY) maxY = (this.f[n].values[i])/1024;
-			if((this.f[n].timeStamps[i] - this.startTime)/60 > maxX) maxX = (this.f[n].timeStamps[i] - this.startTime)/60;
-		
-			
+            if(n!= 2)
+            {
+                if((this.f[n].values[i]/1024) > maxY) maxY = (this.f[n].values[i])/1024;
+                if((this.f[n].timeStamps[i] - this.startTime)/60 > maxX) maxX = (this.f[n].timeStamps[i] - this.startTime)/60;		
+            }
 		}
 	
 
@@ -154,6 +162,20 @@ fPlot.prototype.plot = function()
 	// plot all tracked functions
 	for(var n = 0; n < this.f.length; n++)
 	{
+        if(n==2)
+        {
+            this.canvas.strokeStyle = "rgba(0,0,0,1)";
+            // draw the playback time line 
+            this.canvas.beginPath();
+            this.canvas.moveTo(((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth,0);
+            this.canvas.lineTo(((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth,this.graphheight);
+            this.canvas.stroke();
+            this.canvas.closePath();
+          //  console.log("X: "+ ((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth + "Y: " + this.graphheight);
+            continue;
+        }
+        
+        
 		if(n==0) this.canvas.strokeStyle = "rgba(255,0,0,1)";
 		if(n==1) this.canvas.strokeStyle = "rgba(0,0,255,1)";
 	//	this.canvas.strokeStyle = "rgba(0,0,0,1)";

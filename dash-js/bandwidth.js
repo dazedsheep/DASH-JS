@@ -22,6 +22,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
  
+var maxBandwidth = 8 * 1024 * 1024;        // 4 Mbps
+
 function bandwidth(initial_bps, weight_f, weight_s)
 {
 	this.identifier = 0;
@@ -51,10 +53,15 @@ bandwidth.prototype.calcWeightedBandwidth = function(_bps) {
 	
 	// check whether the bitrate has changed dramatically otherwise we won't search a new representation
 	console.log("Bitrate measured with last segment: " + _bps + " bps");
-	this.bps = parseInt(((this.weight_f * this.bps) + (this.weight_s * _bps)) / 2) * 0.9;  // the weights are used to mimic optmistic or pesmisitic averaging
-	console.log("Cummulative bitrate: " + this.bps + " bps");
+	this.bps = parseInt(((this.weight_f * this.bps) + (this.weight_s * _bps)) / 2) * 0.9;  // the weights are used to mimic optmistic or pessimistic behavior
+	// check if we exceed the set bandwidth ..
+    if( this.bps > maxBandwidth && maxBandwidth > 0) this.bps = maxBandwidth;
+    
+    console.log("Cummulative bitrate: " + this.bps + " bps");
 	
-	// inform the observer
+    
+    
+	// inform the observers
 	this.notify();
 	return this.bps;
 }

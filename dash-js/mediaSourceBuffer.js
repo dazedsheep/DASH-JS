@@ -37,7 +37,7 @@ function mediaSourceBuffer()
 }
 
 
-function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
+function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement, playbackTimePlot)
 {
 	mediaSourceBuffer.prototype = new baseBuffer();
 	
@@ -62,6 +62,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 	mediaSourceBuffer.prototype.bufferStateListener = function(object){
 		
         object.mediaElementBuffered -= dashPlayer.videoTag.currentTime - object.lastTime;
+        
         
         if(object.mediaElementBuffered < 2) {
            
@@ -157,6 +158,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement)
 	_mediaSourceBuffer.mediaAPI = mediaAPI;
 	_mediaSourceBuffer.videoElement = videoElement;
 	_mediaSourceBuffer.lastTime = 0;
+   	_mediaSourceBuffer.playbackTimePlot = playbackTimePlot;
 	_mediaSourceBuffer.registerEventHandler("minimumLevel", _mediaSourceBuffer.signalRefill);
 	
 	return _mediaSourceBuffer;

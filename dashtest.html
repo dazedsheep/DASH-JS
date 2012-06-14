@@ -19,16 +19,27 @@
 	<body>
 	<h1> DASH-JS Showcase</h1>
 	This showcase will only work using Google Chrome with MediaSource API enabled (use chrome://flags to enable the API). 
-	<p></p>
+    <p>
+       <br>
+        Max. Bandwidth in kbps (0=infinite[estimated]): <input type="text" id="bps" value="0"> <input type="button" value="Set" onClick="javascript:setBandwidth()">
+    </p>
+	<p>
 	<video controls autoplay ></video>
 	<canvas id="graph" width="600" height="500"></canvas>
-		<script>
-
+    </p>
+    <script>
+       
+		function setBandwidth()
+            {
+                
+                mybps = parseInt(document.getEelementById("bps").value)*1024;
+                maxBandwidth = mybps;
+                
+            }
 		
 		
 		
-		
-		
+        document.getEelementById("bps").value = maxBandwidth / 1024;
 		video = document.querySelector('video');
 		var dashPlayer = new DASHPlayer(video,"http://www-itec.uni-klu.ac.at/dash/js/content/sintel_multi_rep.mpd");
 		
