@@ -125,12 +125,11 @@ fPlot.prototype.plot = function()
 		this.canvas.font         = '10px sans-serif';
 		this.canvas.textBaseline = 'top';
 		var metrics = this.canvas.measureText(n*steppingY);
-	
 		this.canvas.fillText(n*steppingY, 50 - metrics.width, this.graphheight - ((((n*steppingY)/maxY) * this.graphheight)+10));
 	}
 	
 	steppingX = maxX / 4;
-	for(var n=0; n < maxX/steppingX;n++)
+	/*for(var n=0; n < maxX/steppingX;n++)
 	{
 		this.canvas.fillStyle    = '#00f';
 		this.canvas.font         = '10px sans-serif';
@@ -138,7 +137,13 @@ fPlot.prototype.plot = function()
 		var metrics = this.canvas.measureText(parseInt(n*steppingX));
 	
 		this.canvas.fillText(parseInt(n*steppingX), 50 + (((n*steppingX)/maxX) * this.graphwidth) - metrics.width/2, this.height - 25);
-	}
+	}*/
+        this.canvas.fillStyle    = '#00f';
+        this.canvas.font         = '10px sans-serif';
+        this.canvas.textBaseline = 'top';
+        var metrics = this.canvas.measureText("t");
+        this.canvas.fillText("t", this.graphwidth - metrics.width, this.height - 25);
+    
 	
 		this.canvas.fillStyle    = '#ff0000';
 		this.canvas.font         = '10px sans-serif';
@@ -167,11 +172,33 @@ fPlot.prototype.plot = function()
             this.canvas.strokeStyle = "rgba(0,0,0,1)";
             // draw the playback time line 
             this.canvas.beginPath();
-            this.canvas.moveTo(((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth,0);
-            this.canvas.lineTo(((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth,this.graphheight);
+            // move the line within the segment ..
+            // first get the right segment, we know each is about 2 seconds ...
+            segment_time = 2;
+            m = 0;
+            for(i=0; i < this.f[0].timeStamps.length; i++)
+            {
+                if(this.f[n].values[this.f[n].cnt-1] < segment_time){
+                    m = i;
+                    break;                    
+                }
+                
+                segment_time += 2;
+                m = i;
+            }
+            // estimate the movement of our bar ...
+            
+            
+           // console.log(( (this.f[0].timeStamps[m+1] - this.startTime) - (this.f[0].timeStamps[m] - this.startTime) ) - ( ( (this.f[0].timeStamps[m+1] - this.startTime) - (this.f[0].timeStamps[m] - this.startTime) ) ) /  ( ( ( ( 2000 ) ) ) ) * ( ( (segment_time - this.f[n].values[this.f[n].cnt-1]) *1000) )); 
+            move = ( (this.f[0].timeStamps[m+1] - this.startTime) - (this.f[0].timeStamps[m] - this.startTime) ) -  ( ( (this.f[0].timeStamps[m+1] - this.startTime) - (this.f[0].timeStamps[m] - this.startTime) ) ) /  ( ( ( ( 2000 ) ) ) ) * ( ( (segment_time - this.f[n].values[this.f[n].cnt-1]) *1000) );
+           // console.log(((this.f[0].timeStamps[m] - this.startTime) + (this.f[n].values[this.f[n].cnt-1] - segment_time) )/60);
+            
+            this.canvas.moveTo(((((this.f[0].timeStamps[m] - this.startTime) + move )/60)/maxX)*this.graphwidth, 0);
+            this.canvas.lineTo(((((this.f[0].timeStamps[m] - this.startTime)  + move )/60)/maxX)*this.graphwidth, this.graphheight);
             this.canvas.stroke();
             this.canvas.closePath();
-          //  console.log("X: "+ ((((this.f[n].values[this.f[n].cnt-1])/60)))*this.graphwidth + "Y: " + this.graphheight);
+           // console.log("m: " + m + "f:" + (((this.f[0].timeStamps[m] - this.startTime)/60)/maxX)*this.graphwidth + "segment_t:" + segment_time);
+           // console.log("X: "+ ((((this.f[n].values[this.f[n].cnt-1])/60))/maxX)*this.graphwidth + "Y: " + this.graphheight + "MaxX:" + maxX);
             continue;
         }
         

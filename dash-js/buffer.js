@@ -1,5 +1,5 @@
 /*
- * eventHandlers.js
+ * buffer.js
  *****************************************************************************
  * Copyright (C) 2012 - 2013 Alpen-Adria-Universität Klagenfurt
  *
@@ -22,26 +22,5 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
  
- 
- function onOpenSource(e)
- {
-	_dashSourceOpen(overlayBuffer, adaptation.currentRepresentation, dashPlayer.videoTag);
-	overlayBuffer.bufferStateListener(overlayBuffer);
- }
- 
- function onProgress(e)
- {
 
-	if( adaptation.mediaElement.webkitSourceState != HTMLMediaElement.SOURCE_ENDED )
-	{
-		overlayBuffer.bufferStateListener(overlayBuffer);
-	}
-	
- }
- 
- function onSourceEnded(e)
- {
-	console.log('DASH JS Client got callback - video ended');
-	myFplot.plot();
- }
- 
+

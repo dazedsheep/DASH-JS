@@ -25,19 +25,20 @@ var _mediaSourceBuffer;
 
 
 
-function mediaSourceBuffer()
+function mediaSourceBuffer(id)
 {
 	this._eventHandlers = new Object();
 	this._eventHandlers.cnt = 0;
 	this._eventHandlers.handlers = new Array();
-    this.mediaElementBuffered = 0;
-    this.lastTime = 0;
-    this.fill = false;
-    this.doRefill = false;
+    	this.mediaElementBuffered = 0;
+   	this.lastTime = 0;
+    	this.fill = false;
+    	this.doRefill = false;
+	this.id = id;
 }
 
 
-function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement, playbackTimePlot)
+function init_mediaSourceBuffer(bufferId, criticalLevel,buffersize, mediaAPI, videoElement, playbackTimePlot)
 {
 	mediaSourceBuffer.prototype = new baseBuffer();
 	
@@ -79,7 +80,7 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement,
             if (rc != 0)
             {
               
-                _push_segment_to_media_source_api(rc);
+                _push_segment_to_media_source_api(_mediaSourceBuffer, rc);		// the new MediaAPI allows to have more than one source buffer for the separate decoding chains (really nice) so we may support resolution switching in the future
                 this.mediaElementBuffered += 2;
 
             }
@@ -95,12 +96,12 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement,
 	}
     
     // this is the callback method, called by the AJAX xmlhttp call
-    mediaSourceBuffer.prototype.callback = function(){
+   	mediaSourceBuffer.prototype.callback = function(){
         
-        window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},0,true);
+        	window.setTimeout(function () {_mediaSourceBuffer.refill(_mediaSourceBuffer);},0,true);
         
         
-    }
+    	}
     
 	mediaSourceBuffer.prototype.signalRefill = function()
 	{
@@ -121,8 +122,9 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement,
 	mediaSourceBuffer.prototype.push = function(data,segmentDuration)
 	{
 		
-        _mediaSourceBuffer.fillState.seconds += segmentDuration;
-        _mediaSourceBuffer.add(data);
+       		_mediaSourceBuffer.fillState.seconds += segmentDuration;
+        	_mediaSourceBuffer.add(data);
+	
 	}	
 	
     
@@ -150,16 +152,19 @@ function init_mediaSourceBuffer(criticalLevel,buffersize,mediaAPI, videoElement,
 	
 	
 	
-	_mediaSourceBuffer = new mediaSourceBuffer();
+	_mediaSourceBuffer = new mediaSourceBuffer(bufferId);
 	_mediaSourceBuffer.isOverlayBuffer = true;
 	_mediaSourceBuffer.criticalState.seconds = criticalLevel;
 	_mediaSourceBuffer.bufferSize.maxseconds = buffersize;
-    _mediaSourceBuffer.initBufferArray("seconds",2);
+   	_mediaSourceBuffer.initBufferArray("seconds",2);
 	_mediaSourceBuffer.mediaAPI = mediaAPI;
 	_mediaSourceBuffer.videoElement = videoElement;
 	_mediaSourceBuffer.lastTime = 0;
+	_mediaSourceBuffer.id = bufferId;
    	_mediaSourceBuffer.playbackTimePlot = playbackTimePlot;
 	_mediaSourceBuffer.registerEventHandler("minimumLevel", _mediaSourceBuffer.signalRefill);
+
+		
 	
 	return _mediaSourceBuffer;
 }

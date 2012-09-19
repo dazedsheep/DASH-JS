@@ -22,21 +22,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
- 
- 
- function createMediaSource(representation)
- {
-	// to obtain a new MediaSource we will have to create a new video element but without showing it
-	var _video = document.createElement("video");
-	_video.id = "TEST";
-	// now we can set the event handlers
-	_video.src = _video.webkitMediaSourceURL;
-	// add the standard handlers...
-	_video.addEventListener('progress', onProgress);
-			
-	_video.addEventListener('webkitsourceopen', onOpenSource, false);
-	
-	_video.addEventListener('webkitsourceended', onSourceEnded);
-	
-	return _video;
- }
+function checkSourceError(videoTag)
+{
+	if(videoTag.error == null) return;
+
+	if(videoTag.error.code == 4) {
+
+		console.log("Media SourceAPI error...");
+		throw "ERROR SOURCE NOT SUPPORTED … ";
+
+	}else if(videoTag.error.code == 3) {
+
+		console.log("Decoding error");
+		throw "Decoding error";
+
+	}else if(videoTag.error.code == 1) {
+		console.log("Aborted…");
+		throw "Aborted…";
+	}else if(videoTag.error.code == 2) {
+		console.log("Network error…");
+		throw "Aborted…";
+	}
+}
+
+
+function sourceBufferAppend(videoTag, id, data)
+{
+	if(videoTag.webkitSourceAppend != null){  
+   		videoTag.webkitSourceAppend(id, data);
+    	}else{
+		videoTag.sourceAppend(id, data);
+    	}
+	checkSourceError(videoTag);
+}
+
+
+function addSourceBuffer(videoTag, id, type)
+{
+
+	if (videoTag.sourceAddId != null) {
+   		 videoTag.sourceAddId(id, type);
+ 	 } else if (videoTag.webkitSourceAddId != null) {
+		 console.log("DASH-JS client: adding new source to Media Source with id: "+ id);
+   		 videoTag.webkitSourceAddId(id, type);
+  	} 
+	checkSourceError(videoTag);
+}

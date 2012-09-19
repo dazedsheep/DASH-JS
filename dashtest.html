@@ -2,7 +2,9 @@
 	<head>
 		<title>ITEC @ AAU | DASH-JS Showcase</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
 	<script src="dash-js/dashPlayerVars.js"></script>
+	<script src="dash-js/mediaSourceAPIAdaptation.js"></script>	
 	<script src="dash-js/fplot.js"></script>
 	<script src="dash-js/mpdParser.js"></script>	
 	<script src="dash-js/bandwidth.js"></script>
@@ -10,38 +12,36 @@
 	<script src="dash-js/rate_measurement.js"></script>
 	<script src="dash-js/DASHttp.js"></script>
 	<script src="dash-js/basebuffer.js"></script>
+	<script src="dash-js/timeBuffer.js"></script>
 	<script src="dash-js/mediaSourceBuffer.js"></script>
 	<script src="dash-js/eventHandlers.js"></script>
-	<script src="dash-js/mediaSourceAPIAdaptation.js"></script>
 	<script src="dash-js/dash.js"></script>
 
 	</head>
 	<body>
 	<h1> DASH-JS Showcase</h1>
 	This showcase will only work using Google Chrome with MediaSource API enabled (use chrome://flags to enable the API). 
-    <p>
-       <br>
-        Max. Bandwidth in kbps (0=infinite[estimated]): <input type="text" id="bps" value="0"> <input type="button" value="Set" onClick="javascript:setBandwidth()">
-    </p>
+<p>
+    <br>
+        Bandwidth in kbps (0=infinite[estimated]): <input type="text" id="bps" value="0"> <input type="button" value="Set" onClick="javascript:setBandwidth()"></p>
 	<p>
 	<video controls autoplay ></video>
 	<canvas id="graph" width="600" height="500"></canvas>
     </p>
-    <script>
-       
+		<script>
+ 		document.getElementById("bps").value = maxBandwidth/1024;
 		function setBandwidth()
             {
                 
-                mybps = parseInt(document.getEelementById("bps").value)*1024;
+                mybps = parseInt(document.getElementById("bps").value)*1024;
                 maxBandwidth = mybps;
                 
             }
 		
+		 
 		
-		
-        document.getEelementById("bps").value = maxBandwidth / 1024;
 		video = document.querySelector('video');
-		var dashPlayer = new DASHPlayer(video,"http://www-itec.uni-klu.ac.at/dash/js/content/sintel_multi_rep.mpd");
+		var dashPlayer = new DASHPlayer(video,"http://localhost/dash/bigbuckbunny_mp.mpd");
 		
 	
 		
