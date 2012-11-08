@@ -37,7 +37,7 @@ function DASHttp()
 function _push_segment_to_media_source_api(buffer, data)
 {
     console.log("DASH-JS client: appending data of length: " + data.length + " to the Media Source Buffer with id: "+ buffer.id);
-    sourceBufferAppend(dashPlayer.videoTag, buffer.id, data);    
+    sourceBufferAppend(dashPlayer.MSE, buffer.id, data);
    
 }
 
@@ -119,7 +119,7 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer)
 
 
 				
-function _dashSourceOpen(buffer, presentation, video)
+function _dashSourceOpen(buffer, presentation, video, mediaSource)
 {
 	// check the parsed mpd
 	// fetch a representation and check whether selfinitialized or ...
@@ -128,8 +128,8 @@ function _dashSourceOpen(buffer, presentation, video)
 	video.height = presentation.height;
 
 	console.log("DASJ-JS: content type: " + presentation.mimeType + '; codecs="' + presentation.codecs + '"');
-	addSourceBuffer(video, buffer.id, presentation.mimeType + '; codecs="' + presentation.codecs + '"');
-	checkSourceError(video);
+	addSourceBuffer(mediaSource, buffer.id, presentation.mimeType + '; codecs="' + presentation.codecs + '"');
+	
 	
 	if(presentation.hasInitialSegment == false)
 	{

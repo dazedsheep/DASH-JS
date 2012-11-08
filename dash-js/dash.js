@@ -32,23 +32,22 @@ function DASH_MPD_loaded()
 	overlayBuffer = init_mediaSourceBuffer("0", 20,30,0,dashInstance.videoTag);
 	dashInstance.overlayBuffer = overlayBuffer;
  	
-	if (dashInstance.videoTag.mediaSourceURL != null) {
-   		dashInstance.videoTag.src = video.mediaSourceURL;
-		console.log("DASH-JS: attached Media Source");
- 	 } else if (dashInstance.videoTag.webkitMediaSourceURL != null) {
-   		dashInstance.videoTag.src = video.webkitMediaSourceURL;
-		console.log("DASH-JS: attached Media Source");
-  	 } else {
-    		console.log("MediaSource API could not be found!");
-	 }
+    /* new MSE ... */
+    var URL = window.URL || window.wekitURL;
+    if(window.WebKitMediaSource != null){
+        window.MediaSource = window.WebKitMediaSource;
+    }
+    var MSE = new window.MediaSource();
+    dashInstance.MSE = MSE;
+    dashInstance.videoTag.src = URL.createObjectURL(MSE);
 
-	checkSourceError(dashInstance.videoTag);
+	
 
-        dashInstance.videoTag.addEventListener('webkitsourceopen', onOpenSource, false);
-	dashInstance.videoTag.addEventListener('sourceopen', onOpenSource, false);
+    dashInstance.MSE.addEventListener('webkitsourceopen', onOpenSource, false);
+	dashInstance.MSE.addEventListener('sourceopen', onOpenSource, false);
 
-	dashInstance.videoTag.addEventListener('webkitsourceended', onSourceEnded);
-	dashInstance.videoTag.addEventListener('sourceended', onOpenSource, false);
+	dashInstance.MSE.addEventListener('webkitsourceended', onSourceEnded);
+	dashInstance.MSE.addEventListener('sourceended', onOpenSource, false);
      
 	
 	overlayBuffer.addEventHandler(function(fillpercent, fillinsecs, max){ console.log("Event got called from overlay buffer, fillstate(%) = " + fillpercent + ", fillstate(s) = " + fillinsecs + ", max(s) = " + max); });

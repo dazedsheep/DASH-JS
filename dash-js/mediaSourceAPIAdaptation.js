@@ -46,25 +46,34 @@ function checkSourceError(videoTag)
 }
 
 
-function sourceBufferAppend(videoTag, id, data)
+function sourceBufferAppend(mediaSource, id, data)
 {
-	if(videoTag.webkitSourceAppend != null){  
-   		videoTag.webkitSourceAppend(id, data);
-    	}else{
-		videoTag.sourceAppend(id, data);
-    	}
-	checkSourceError(videoTag);
+    mediaSource.sourceBuffers[id].append(data);
 }
 
 
-function addSourceBuffer(videoTag, id, type)
+function addSourceBuffer(mediaSource, id, type)
 {
 
-	if (videoTag.sourceAddId != null) {
-   		 videoTag.sourceAddId(id, type);
- 	 } else if (videoTag.webkitSourceAddId != null) {
-		 console.log("DASH-JS client: adding new source to Media Source with id: "+ id);
-   		 videoTag.webkitSourceAddId(id, type);
-  	} 
-	checkSourceError(videoTag);
+	mediaSource.addSourceBuffer(type);
 }
+
+
+
+ 
+ function createMediaSource(representation)
+ {
+	// to obtain a new MediaSource we will have to create a new video element but without showing it
+	var _video = document.createElement("video");
+	_video.id = "TEST";
+	// now we can set the event handlers
+	_video.src = _video.webkitMediaSourceURL;
+	// add the standard handlers...
+	_video.addEventListener('progress', onProgress);
+			
+	_video.addEventListener('webkitsourceopen', onOpenSource, false);
+	
+	_video.addEventListener('webkitsourceended', onSourceEnded);
+	
+	return _video;
+ }

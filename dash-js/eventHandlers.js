@@ -25,7 +25,7 @@
  
  function onOpenSource(e)
  {
-	_dashSourceOpen(overlayBuffer, adaptation.currentRepresentation, dashPlayer.videoTag);
+	_dashSourceOpen(overlayBuffer, adaptation.currentRepresentation, dashPlayer.videoTag, e.target);
 	overlayBuffer.bufferStateListener(overlayBuffer);
  }
  
