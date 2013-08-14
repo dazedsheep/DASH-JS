@@ -45,8 +45,14 @@ function adaptationLogic(_mpd, video)
 	this.currentRepresentation = _mpd.period[0].group[0].representation[m];
 	if(this.currentRepresentation.baseURL == false) this.currentRepresentation.baseURL = _mpd.baseURL;
 	if(this.lowestRepresentation.baseURL == false) this.lowestRepresentation.baseURL = _mpd.baseURL;
-	this.currentRepresentation.curSegment = 0;
-	this.resolutionSwitch = 0;
+	if(_mpd.type == "dynamic")
+    {
+        this.currentRepresentation.curSegment = _mpd.period[0].group[0].segmentTemplates[0].startNumber;
+    }else
+    {
+        this.currentRepresentation.curSegment = 0;
+	}
+    this.resolutionSwitch = 0;
 	this.mediaElement = video;
 	
 	this.observers = new Array();
@@ -77,8 +83,11 @@ adaptationLogic.prototype.notify = function() {
 }
 
 adaptationLogic.prototype._getNextChunk = function (count){
-
-	return this.currentRepresentation.segmentList.segment[count];
+    if(this.currentRepresentation.type == "dynamic")
+    {
+        return this.currentRepresentation.getSegment(this.currentRepresentation);
+    }
+    return this.currentRepresentation.segmentList.segment[count];
 }
 
 adaptationLogic.prototype.getInitialChunk = function(presentation)
@@ -88,10 +97,14 @@ adaptationLogic.prototype.getInitialChunk = function(presentation)
 
 adaptationLogic.prototype._getNextChunkP = function (presentation, count){
 
+    if(presentation.type == "dynamic")
+    {
+        return presentation.getSegment(presentation);
+    }
 	return presentation.segmentList.segment[count];
 }
 
-function init_rateBasedAdaptation(_mpd, video,bandwidth)
+function init_rateBasedAdaptation(_mpd, video, bandwidth)
 {
 	rateBasedAdaptation.prototype = new adaptationLogic(_mpd, video);
 	rateBasedAdaptation.prototype.switchRepresentation = function (){
@@ -124,7 +137,7 @@ function init_rateBasedAdaptation(_mpd, video,bandwidth)
 						{
 							console.log("Resolution switch NYI");
 							// force a new media source with the new resolution but don't hook it in, wait until enough data has been downloaded
-							
+							// only swith the bitrate within the given resolution
 							
 						}
 				}else{		

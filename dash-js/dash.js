@@ -11,15 +11,14 @@ function updatePlaybackTime()
 
 function DASH_MPD_loaded()
 {
-
-	
-
-
 	myBandwidth = new bandwidth(bps, 1.1, 0.9);
    
 	adaptation = init_rateBasedAdaptation(dashInstance.mpdLoader.mpdparser.pmpd, dashInstance.videoTag, myBandwidth);
 	
-   	myFplot = new fPlot(document.getElementById("graph").getContext("2d"),parsePT(dashInstance.mpdLoader.mpdparser.pmpd.mediaPresentationDuration),document.getElementById("graph").width,document.getElementById("graph").height);
+   	if(dashInstance.mpdLoader.mpdparser.pmpd.mediaPresentationDuration) myFplot = new fPlot(document.getElementById("graph").getContext("2d"),parsePT(dashInstance.mpdLoader.mpdparser.pmpd.mediaPresentationDuration),document.getElementById("graph").width,document.getElementById("graph").height);
+        else
+            myFplot = new fPlot(document.getElementById("graph").getContext("2d"), 0, document.getElementById("graph").width, document.getElementById("graph").height);
+
  	myFplot.initNewFunction(0);
 	myFplot.initNewFunction(1);
     	myFplot.initNewFunction(2); // the current playback time
@@ -29,7 +28,7 @@ function DASH_MPD_loaded()
 	adaptation.addObserver(myFplot);
 	adaptation.switchRepresentation(); // try to get a better representation at the beginning
 	
-	overlayBuffer = init_mediaSourceBuffer("0", 20,30,0,dashInstance.videoTag);
+	overlayBuffer = init_mediaSourceBuffer("0", 2,4,0,dashInstance.videoTag);
 	dashInstance.overlayBuffer = overlayBuffer;
  	
     /* new MSE ... */

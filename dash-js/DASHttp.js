@@ -60,14 +60,16 @@ function _fetch_segment(presentation, url, video, range, buffer)
 	xhr.onload = function(e)
    		 {
         
-     			    data = new Uint8Array(this.response);
-    			    mybps = endBitrateMeasurementByID(this.timeID,data.length);
-    			    myBandwidth.calcWeightedBandwidth(parseInt(mybps));
-    			    adaptation.switchRepresentation();
+     			data = new Uint8Array(this.response);
+    			mybps = endBitrateMeasurementByID(this.timeID,data.length);
+    			myBandwidth.calcWeightedBandwidth(parseInt(mybps));
+                adaptation.switchRepresentation();
     			    
 			    _push_segment_to_media_source_api(buffer, data);
-    			    
-			    if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
+                if(presentation.type != "dynamic")
+                {
+                    if(presentation.curSegment >= presentation.segmentList.segments-1) video.webkitSourceEndOfStream(HTMLMediaElement.EOS_NO_ERROR);
+                }
         
    		 };
 	
@@ -104,9 +106,10 @@ function _fetch_segment_for_buffer(presentation, url, video, range, buffer)
         
      		   // push the data into our buffer
        		buffer.push(data, 2);
-        
-        	if(presentation.curSegment >= presentation.segmentList.segments-1) buffer.streamEnded = true;
-        
+            if(presentation.type != "dynamic")
+            {
+                if(presentation.curSegment >= presentation.segmentList.segments-1) buffer.streamEnded = true;
+            }
        		buffer.callback();
 		
 	};
@@ -136,6 +139,7 @@ function _dashSourceOpen(buffer, presentation, video, mediaSource)
         	baseURL = presentation.baseURL;
 		_fetch_segment(presentation, (baseURL != 'undefined' ? presentation.baseURL : '') + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
 	
+        /* TODO: needs a change to work with dynamic mpd types */
 		if(presentation.curSegment > 0 ) presentation.curSegment = 1;
 		presentation.curSegment++;
 				
@@ -150,13 +154,15 @@ function _dashSourceOpen(buffer, presentation, video, mediaSource)
 
 function _dashFetchSegmentBuffer(presentation, video, buffer)
 {
-	if(presentation.curSegment >= presentation.segmentList.segments-1) {
-        return; 
+    if(presentation.type != "dynamic")
+    {
+        if(presentation.curSegment >= presentation.segmentList.segments-1) {
+            return;
+        }
     }
     baseURL = presentation.baseURL;
 	_fetch_segment_for_buffer(presentation, (baseURL != 'undefined' ? presentation.baseURL : '') + adaptation._getNextChunkP(presentation, presentation.curSegment).src, video, adaptation._getNextChunk(presentation.curSegment).range, buffer);
 	presentation.curSegment++;
-	
 }
 
 

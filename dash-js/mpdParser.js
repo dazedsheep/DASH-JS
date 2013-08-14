@@ -36,6 +36,14 @@ MPD.period.start = "start";
 MPD.group = new Object();
 MPD.group.name = "AdaptationSet";
 MPD.group.bitstreamSwitchting = "bitstreamSwitching";	// tells wether bitstream switching is allowed or not
+MPD.group.codecs = "codecs";
+MPD.group.mimeType = "mimeType";
+MPD.SegmentTemplate = new Object();
+MPD.SegmentTemplate.name = "SegmentTemplate";
+MPD.SegmentTemplate.timescale = "timescale";
+MPD.SegmentTemplate.initialization = "initialization";
+MPD.SegmentTemplate.media = "media";
+MPD.SegmentTemplate.startNumber = "startNumber";
 MPD.representation = new Object();
 MPD.representation.name = "Representation";
 MPD.representation.id = "id";
@@ -175,7 +183,7 @@ MPDParser.prototype.parseInitialization = function(representations, periods, gro
 			for(i=1; i<attribs; i++)
 			{
 				attribValue = eval("MPD.initialization."+getKeyByIndex(MPD.initialization,i).toString());
-				if(mnode.hasAttribute(attribValue)) eval("this.pmpd.period[periods].group[groups].representation[representations].initializationSegment." + getKeyByIndex(MPD.initialization,i).toString() + "= mnode.attributes.getNamedItem(attribValue).value");
+				if(mnode.hasAttribute(attribValue)) eval("this.pmpd.period[periods].group[groups].representation[representations].initializationSegment." + getKeyByIndex(MPD.initialization,i).toString() + "= node.attributes.getNamedItem(attribValue).value");
 				//console.log("pmpd.period["+periods+"].group["+groups+"].representation["+representations+"].initializationSegment." + getKeyByIndex(MPD.initialization,i).toString() + "=" + eval("this.pmpd.period[periods].groups[groups].representation[representations].initializationSegment." + getKeyByIndex(MPD.initialization,i).toString()));
 			}
 		
@@ -268,6 +276,7 @@ MPDParser.prototype.parseRepresentation = function(representations, periods, gro
 		
 		}	
 	}
+    this.pmpd.period[periods].group[groups].representation[representations].type = "static";
 }
 
 MPDParser.prototype.parseGroup = function(periods, groups, node)
@@ -300,7 +309,6 @@ MPDParser.prototype.parseGroup = function(periods, groups, node)
 				this.parseRepresentation(representations,groups, periods, groupNode);
 				
 				representations++;
-			
 			}
 		
 		}	
@@ -308,10 +316,136 @@ MPDParser.prototype.parseGroup = function(periods, groups, node)
 
 }
 
+MPDParser.prototype.parseRepresentationDynamic = function(representations, periods, groups, node)
+{
+	var attribs = objectSize(MPD.representation);
+    
+	for(i=1; i<attribs; i++)
+	{
+		attribValue = eval("MPD.representation."+getKeyByIndex(MPD.representation,i).toString());
+		if(node.hasAttribute(attribValue)) eval("this.pmpd.period[periods].group[groups].representation[representations]." + getKeyByIndex(MPD.representation,i).toString() + "= node.attributes.getNamedItem(attribValue).value");
+		//console.log("pmpd.period["+periods+"].group["+groups+"].representation["+representations+"]." + getKeyByIndex(MPD.representation,i).toString() + "=" + eval("this.pmpd.period[periods].groups[groups].representation[representations]." + getKeyByIndex(MPD.representation,i).toString()));
+	}
+	
+	var representationChilds = node.childNodes;
+	this.pmpd.period[periods].group[groups].representation[representations].hasInitialSegment = false;
+	this.pmpd.period[periods].group[groups].representation[representations].baseURL = false;
+    
+    
+    this.pmpd.period[periods].group[groups].representation[representations].getSegment = function(presentation){
+        
+        
+        var url = presentation.templateURL;
+        for(i=0; i < presentation.vars.length; i++)
+        {
+            if( presentation.vars[i] == "$Number$")
+            {
+                url = url.replace(presentation.vars[i], presentation.curSegment);
+            }
+           
+            if( presentation.vars[i] == "$Bandwidth$")
+            {
+                url = url.replace(presentation.vars[i], presentation.bandwidth);
+            }
+        }
+        var segment = new Object();
+        segment.src = url;
+        return segment;
+        
+    }
+    
+}
+
+MPDParser.prototype.parseSegmentTemplateDynamic = function(templates, periods, groups, node)
+{
+	var attribs = objectSize(MPD.SegmentTemplate);
+    
+	for(i=1; i<attribs; i++)
+	{
+		attribValue = eval("MPD.SegmentTemplate."+getKeyByIndex(MPD.SegmentTemplate,i).toString());
+		if(node.hasAttribute(attribValue)) eval("this.pmpd.period[periods].group[groups].segmentTemplates[templates]." + getKeyByIndex(MPD.SegmentTemplate,i).toString() + "= node.attributes.getNamedItem(attribValue).value");
+    }
+    
+    // parse the media attribute for variables...
+    
+    var regex = new RegExp(/\$[a-zA-Z]+\$/);
+    var m;
+    if(this.pmpd.period[periods].group[groups].segmentTemplates[templates].media)
+    {
+        m = regex.exec(this.pmpd.period[periods].group[groups].segmentTemplates[templates].media);
+        // m will include all matches
+        this.pmpd.period[periods].group[groups].segmentTemplates[templates].templateVars = m;
+    }
+}
+
+MPDParser.prototype.parseGroupDynamic = function(periods, groups, node)
+{
+	var attribs = objectSize(MPD.group);
+    
+	for(i=1; i<attribs; i++)
+	{
+		attribValue = eval("MPD.group."+getKeyByIndex(MPD.group,i).toString());
+		if(node.hasAttribute(attribValue)) eval("this.pmpd.period[periods].group[groups]." + getKeyByIndex(MPD.group,i).toString() + "= node.attributes.getNamedItem(attribValue).value");
+		//console.log("pmpd.period["+periods+"].group["+groups+"]." + getKeyByIndex(MPD.group,i).toString() + "=" + eval("this.pmpd.period[periods].groups[groups]" + getKeyByIndex(MPD.group,i).toString()));
+	}
+    
+	// now the representations ...
+	var groupchilds = node.childNodes;
+	var templates = 0;
+    var representations = 0;
+	this.pmpd.period[periods].group[groups].representation = new Array();
+	this.pmpd.period[periods].group[groups].segmentTemplates = new Array();
+	
+	for(gr=0;gr<groupchilds.length;gr++)
+	{
+        
+		if(groupchilds.item(gr).nodeName != "#text")
+		{
+            
+			var groupNode = groupchilds.item(gr);
+            
+			if(groupNode.nodeName == MPD.SegmentTemplate.name)
+			{
+				this.pmpd.period[periods].group[groups].segmentTemplates[templates] = new Object();
+				this.parseSegmentTemplateDynamic(templates, groups, periods, groupNode);
+                templates++;
+			}
+            
+            if(groupNode.nodeName == MPD.representation.name)
+			{
+				this.pmpd.period[periods].group[groups].representation[representations] = new Object();
+				this.parseRepresentationDynamic(representations,groups, periods, groupNode);
+				representations++;
+			}
+            
+		}
+	}
+
+    var j;
+    for(j=0; j < representations; j++)
+    {
+        if(this.pmpd.period[periods].group[groups].segmentTemplates[0].initialization)
+        {
+            this.pmpd.period[periods].group[groups].representation[j].hasInitialSegment = true;
+            this.pmpd.period[periods].group[groups].representation[j].initializationSegment = new Object();
+            this.pmpd.period[periods].group[groups].representation[j].initializationSegment.src = this.pmpd.period[periods].group[groups].segmentTemplates[0].initialization;
+        }else{
+            this.pmpd.period[periods].group[groups].representation[j].hasInitialSegment = false;
+        }
+        this.pmpd.period[periods].group[groups].representation[j].codecs = this.pmpd.period[periods].group[groups].codecs;
+        this.pmpd.period[periods].group[groups].representation[j].mimeType = this.pmpd.period[periods].group[groups].mimeType;
+        
+        // the current segment has to be set to the startNumber
+        this.pmpd.period[periods].group[groups].representation[j].curSegment = this.pmpd.period[periods].group[groups].segmentTemplates[0].startNumber;
+        this.pmpd.period[periods].group[groups].representation[j].type = "dynamic";
+        this.pmpd.period[periods].group[groups].representation[j].templateURL = this.pmpd.period[periods].group[groups].segmentTemplates[0].media;
+        this.pmpd.period[periods].group[groups].representation[j].vars = this.pmpd.period[periods].group[groups].segmentTemplates[0].templateVars;
+    }
+}
 
 MPDParser.prototype.parsePeriod = function(periods,node)
 {
-	var attribs =objectSize(MPD.period);
+	var attribs = objectSize(MPD.period);
 	for(i=1; i<attribs; i++)
 	{
 		attribValue = eval("MPD.period."+getKeyByIndex(MPD.period,i).toString());
@@ -341,13 +475,48 @@ MPDParser.prototype.parsePeriod = function(periods,node)
 			}
 		}
 	}		
-	
-	
+}
 
+MPDParser.prototype.parsePeriodDynamic = function(periods,node)
+{
+	var attribs = objectSize(MPD.period);
+	for(i=1; i<attribs; i++)
+	{
+		attribValue = eval("MPD.period."+getKeyByIndex(MPD.period,i).toString());
+		if(node.hasAttribute(attribValue)) eval("this.pmpd.period[periods]." + getKeyByIndex(MPD.period,i).toString() + "= node.attributes.getNamedItem(attribValue).value");
+        //	console.log("pmpd.period["+periods+"]" + getKeyByIndex(MPD.period,i).toString() + "=" + eval("this.pmpd.period[periods]" + getKeyByIndex(MPD.period,i).toString()));
+	}
+    
+	// now check the adaptationsets ...
+    
+	var periodchilds = node.childNodes;
+	var groups = 0;
+	this.pmpd.period[periods].group = new Array();
+	
+	for(j=0;j<periodchilds.length;j++)
+	{
+		if(periodchilds.item(j).nodeName != "#text")
+		{
+			var periodNode = periodchilds.item(j);
+            
+			if(periodNode.nodeName == MPD.group.name)
+			{
+				this.pmpd.period[periods].group[groups] = new Object();
+                
+				this.parseGroupDynamic(periods, groups, periodNode);
+				
+				groups++;
+			}
+		}
+	}		
 }
 
 MPDParser.prototype.parse = function()
 {
+    // check the profile ...
+    
+    
+    
 	 if(this.mpd.documentElement.tagName == MPD.rootElement.name)
 	 {
 		// get all attributes within the root element
@@ -361,38 +530,78 @@ MPDParser.prototype.parse = function()
 			console.log("pmpd." + getKeyByIndex(MPD.rootElement,i).toString() + "=" + eval("this.pmpd." + getKeyByIndex(MPD.rootElement,i).toString()));
 			
 		}
-				
-		var childsFromRoot = this.mpd.documentElement.childNodes;
-		this.pmpd.period = new Array();
-		var periods = 0;			
-		for(c=0;c<childsFromRoot.length;c++)
-		{
-			if(childsFromRoot.item(c).nodeName != "#text")
-			{
-				// now check for the BaseURL
-				var node = childsFromRoot.item(c);
-				if(node.nodeName == MPD.baseURL.name)
-				{
-					// we won't expect any attributes with the <BaseURL>...</BaseURL>
-					this.pmpd.baseURL = node.textContent;
-					console.log(this.pmpd.baseURL);
-				}
+		
+         // check the type: static or dynamic
+         
+        if(this.pmpd.type == "static")
+        {
+            var childsFromRoot = this.mpd.documentElement.childNodes;
+            this.pmpd.period = new Array();
+            var periods = 0;
+            for(c=0;c<childsFromRoot.length;c++)
+            {
+                if(childsFromRoot.item(c).nodeName != "#text")
+                {
+                    // now check for the BaseURL
+                    var node = childsFromRoot.item(c);
+                    if(node.nodeName == MPD.baseURL.name)
+                    {
+                        // we won't expect any attributes with the <BaseURL>...</BaseURL>
+                        this.pmpd.baseURL = node.textContent;
+                        console.log(this.pmpd.baseURL);
+                    }
 						
-				if(node.nodeName == MPD.period.name)
-				{
-					// uhm a new period
-					this.pmpd.period[periods] = new Object();
+                    if(node.nodeName == MPD.period.name)
+                    {
+                        // uhm a new period
+                        this.pmpd.period[periods] = new Object();
 							
-					this.parsePeriod(periods,node);
+                        this.parsePeriod(periods,node);
 											
-					periods++;
-				}
+                        periods++;
+                    }
 					
-			}
+                }
 				
-		}
-			
-	 }
+            }
+        }
+         
+        if(this.pmpd.type == "dynamic")
+        {
+            var childsFromRoot = this.mpd.documentElement.childNodes;
+            this.pmpd.period = new Array();
+            var periods = 0;
+            for(c=0;c<childsFromRoot.length;c++)
+            {
+                if(childsFromRoot.item(c).nodeName != "#text")
+                {
+                    // now check for the BaseURL
+                    var node = childsFromRoot.item(c);
+                    if(node.nodeName == MPD.baseURL.name)
+                    {
+                        // we won't expect any attributes with the <BaseURL>...</BaseURL>
+                        this.pmpd.baseURL = node.textContent;
+                        console.log(this.pmpd.baseURL);
+                    }
+                    
+                    if(node.nodeName == MPD.period.name)
+                    {
+                        // uhm a new period
+                        this.pmpd.period[periods] = new Object();
+                        
+                        this.parsePeriodDynamic(periods,node);
+                        
+                        periods++;
+                    }
+					
+                }
+				
+            }
+
+        }
+         
+         
+     }
 	 
 	
 }	
