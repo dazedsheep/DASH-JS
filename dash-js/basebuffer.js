@@ -1,7 +1,7 @@
 /*
  * basebuffer.js
  *****************************************************************************
- * Copyright (C) 2012 - 2013 Alpen-Adria-Universität Klagenfurt
+ * Copyright (C) 2012 - 2013 Alpen-Adria-Universitï¿½t Klagenfurt
  *
  * Created on: Feb 13, 2012
  * Authors: Benjamin Rainer <benjamin.rainer@itec.aau.at>
@@ -37,7 +37,7 @@ function baseBuffer()
 	this.criticalState = new Object(); // used for signaling that we may run out of buffered data
 	this.criticalState.seconds = 0;
 	this.criticalState.bytes = 0;
-	
+	this.underRunOccured = false;
 	
 	this.eventHandlers = new Object();
 	this.eventHandlers.handler = new Array();
@@ -103,15 +103,31 @@ baseBuffer.prototype.drain = function(dimension,amount)
 	{
 		
 		if(this.fillState.seconds == 0 && this.streamEnded) return -1;
+		
         if(this.fillState.seconds <= this.criticalState.seconds && !this.streamEnded) 
         {
+        	//> The fill state is going below critical level. Signal minimumLevel event
             this.callEvent("minimumLevel");
-            return 0;
-        }else{
-           
+            
+            //> But, if there is data in buffer, return that data if buffer underrun did not occur
+            //> If there was buffer underrrun, we need to buffer for minimun buffer level before playing
+            //> again
+            if (this.fillState.seconds > 0 && this.underRunOccured == false) {
+            	
+            	this.fillState.seconds -= amount;
+                return this.get();
+            }
+            else if (this.underRunOccured == false){
+            	//> Signal Buffer underrun
+            	console.log("Buffer underrun!");
+            	this.underRunOccured = true;
+            }
+        }
+        else{
+        	//> Set under run occured false as there is enough buffer filled now
+            this.underRunOccured = false;
             this.fillState.seconds -= amount;
             return this.get();
-            
         }
     }	    
     return 0;
