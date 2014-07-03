@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<title>ITEC @ AAU | DASH-JS Showcase</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<script src="dash-js/dashPlayerVars.js"></script>
+	<script src="dash-js/fplot.js"></script>
+	<script src="dash-js/mpdParser.js"></script>	
+	<script src="dash-js/bandwidth.js"></script>
+	<script src="dash-js/adaptationlogic.js"></script>
+	<script src="dash-js/rate_measurement.js"></script>
+	<script src="dash-js/DASHttp.js"></script>
+	<script src="dash-js/basebuffer.js"></script>
+	<script src="dash-js/timeBuffer.js"></script>
+	<script src="dash-js/mediaSourceBuffer.js"></script>
+	<script src="dash-js/eventHandlers.js"></script>
+	<script src="dash-js/mediaSourceAPIAdaptation.js"></script>
+	<script src="dash-js/dash.js"></script>
+
+	</head>
+	<body>
+	<h1> DASH-JS Showcase</h1>
+        <p> <a href="http://www-itec.uni-klu.ac.at/dash/js/dashtest-ibmff.html?MPD=http://www-itec.uni-klu.ac.at/dash/js/content/bunny_ibmff_240.mpd"> Big Buck Bunny 320x240</a> <br>
+        <a href="http://www-itec.uni-klu.ac.at/dash/js/dashtest-ibmff.html?MPD=http://www-itec.uni-klu.ac.at/dash/js/content/bunny_ibmff_360.mpd"> Big Buck Bunny 480x360 </a> <br>
+        <a href="http://www-itec.uni-klu.ac.at/dash/js/dashtest-ibmff.html?MPD=http://www-itec.uni-klu.ac.at/dash/js/content/bunny_ibmff_720.mpd"> Big Buck Bunny 1280x720 </a> <br>
+        <a href="http://www-itec.uni-klu.ac.at/dash/js/dashtest-ibmff.html?MPD=http://www-itec.uni-klu.ac.at/dash/js/content/bunny_ibmff_1080.mpd"> Big Buck Bunny 1920x1080 </a> <br>
+        <br>
+        Max. Bandwidth in kbps (0=infinite[estimated]): <input type="text" id="bps" value="0"> <input type="button" value="Set" onClick="javascript:setBandwidth()">
+    </p>
+    <video controls autoplay ></video>
+	<canvas id="graph" width="600" height="500"></canvas>
+		<script>
+            function setBandwidth()
+            {
+                
+                mybps = parseInt(document.getElementById("bps").value)*1024;
+                maxBandwidth = mybps;
+                
+            }
+            function getParam(variable){
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }       return(false);
+            }
+		video = document.querySelector('video');
+		var dashPlayer = new DASHPlayer(video,getParam("MPD"));
+		
+	
+		
+		</script>
+	</body>
+</html>

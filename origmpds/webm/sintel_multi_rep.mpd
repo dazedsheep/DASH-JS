@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns="urn:mpeg:DASH:schema:MPD:2011"
+     xsi:schemaLocation="urn:mpeg:DASH:schema:MPD:2011"
+     profiles="urn:mpeg:dash:profile:full:2011"
+     type="static"
+     mediaPresentationDuration="PT0H9M56.46S"
+     minBufferTime="PT15.0S">   
+	<BaseURL>http://www-itec.uni-klu.ac.at/dash/js/content/</BaseURL>
+	<Period start="PT0S">
+		<AdaptationSet bitstreamSwitching="true">
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="329040">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_200k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_200k.webm" mediaRange="4768-82046"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="82047-162639"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="162640-240275"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="240276-329242"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="329243-402937"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="402938-449541"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="449542-563927"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="563928-640282"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="640283-751240"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="751241-851920"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="851921-933153"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="933154-1055891"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1055892-1154470"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1154471-1248607"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1248608-1354090"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1354091-1478057"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1478058-1556835"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1556836-1639085"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1639086-1713817"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1713818-1786766"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1786767-1863781"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1863782-1927605"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1927606-1996513"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="1996514-2049854"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="2049855-2100032"/>
+					<SegmentURL media="sintel_200k.webm" mediaRange="2100033-2145908"/>
+				</SegmentList>
+			</Representation>
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="573804">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_500k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_500k.webm" mediaRange="4768-122324"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="122325-280293"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="280294-435129"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="435130-616121"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="616122-741969"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="741970-804866"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="804867-1106511"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1106512-1252092"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1252093-1439786"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1439787-1645892"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1645893-1780024"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1780025-1984561"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="1984562-2146663"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2146664-2296602"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2296603-2481758"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2481759-2673162"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2673163-2816498"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2816499-2971310"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="2971311-3089057"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3089058-3206390"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3206391-3352806"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3352807-3449197"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3449198-3555666"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3555667-3625500"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3625501-3684679"/>
+					<SegmentURL media="sintel_500k.webm" mediaRange="3684680-3743268"/>
+				</SegmentList>
+			</Representation>
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="812312">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_800k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_800k.webm" mediaRange="4768-195920"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="195921-458392"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="458393-692430"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="692431-931925"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="931926-1090563"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="1090564-1164342"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="1164343-1658238"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="1658239-1866427"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="1866428-2117955"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="2117956-2406675"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="2406676-2596523"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="2596524-2900168"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="2900169-3137288"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="3137289-3356890"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="3356891-3616118"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="3616119-3874351"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="3874352-4078269"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4078270-4304552"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4304553-4467116"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4467117-4629280"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4629281-4836928"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4836929-4959713"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="4959714-5090910"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="5090911-5172252"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="5172253-5236916"/>
+					<SegmentURL media="sintel_800k.webm" mediaRange="5236917-5299801"/>
+				</SegmentList>
+			</Representation>
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="1281002">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_1400k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_1400k.webm" mediaRange="4768-203054"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="203055-586870"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="586871-949866"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="949867-1392877"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="1392878-1658827"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="1658828-1752007"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="1752008-2621178"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="2621179-2996502"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="2996503-3443818"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="3443819-3946874"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="3946875-4252941"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="4252942-4722436"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="4722437-5105608"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="5105609-5468403"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="5468404-5867453"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="5867454-6282880"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="6282881-6609943"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="6609944-6974167"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="6974168-7226362"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="7226363-7484240"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="7484241-7807181"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="7807182-7966899"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="7966900-8127468"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="8127469-8223570"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="8223571-8293555"/>
+					<SegmentURL media="sintel_1400k.webm" mediaRange="8293556-8358536"/>
+				</SegmentList>
+			</Representation>
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="1587728">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_1800k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_1800k.webm" mediaRange="4768-203685"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="203686-688404"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="688405-1127135"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="1127136-1661380"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="1661381-1968217"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="1968218-2061397"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="2061398-2952954"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="2952955-3413464"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="3413465-3964783"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="3964784-4930266"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="4930267-5378495"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="5378496-5939086"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="5939087-6423629"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="6423630-6878539"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="6878540-7369316"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="7369317-7897161"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="7897162-8290288"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="8290289-8741295"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="8741296-9057355"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="9057356-9378808"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="9378809-9742145"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="9742146-9923557"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="9923558-10111418"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="10111419-10222784"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="10222785-10294943"/>
+					<SegmentURL media="sintel_1800k.webm" mediaRange="10294944-10360263"/>
+				</SegmentList>
+			</Representation>
+			<Representation id="0" codecs="vp8" mimeType="video/webm" width="854" height="480" startWithSAP="1" bandwidth="2069862">
+				<SegmentBase>
+					<Initialization sourceURL="sintel_2400k.webm" range="0-4767"/>
+				</SegmentBase>
+				<SegmentList duration="2">
+					<SegmentURL media="sintel_2400k.webm" mediaRange="4768-203518"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="203519-749348"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="749349-1281396"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="1281397-2182249"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="2182250-2579103"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="2579104-2672283"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="2672284-3732421"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="3732422-4289932"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="4289933-4857457"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="4857458-5901134"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="5901135-6847956"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="6847957-7743138"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="7743139-8378735"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="8378736-8975777"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="8975778-9647872"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="9647873-10327576"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="10327577-10888603"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="10888604-11513649"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="11513650-11978596"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="11978597-12435133"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="12435134-12878011"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="12878012-13070028"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="13070029-13257889"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="13257890-13369255"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="13369256-13441414"/>
+					<SegmentURL media="sintel_2400k.webm" mediaRange="13441415-13506734"/>
+				</SegmentList>
+			</Representation>
+		</AdaptationSet>
+	</Period>
+</MPD>

@@ -91,7 +91,7 @@ adaptationLogic.prototype._getNextChunkP = function (presentation, count){
 	return presentation.segmentList.segment[count];
 }
 
-function init_rateBasedAdaptation(_mpd, video,bandwidth)
+function init_rateBasedAdaptation(_mpd, video, bandwidth)
 {
 	rateBasedAdaptation.prototype = new adaptationLogic(_mpd, video);
 	rateBasedAdaptation.prototype.switchRepresentation = function (){
@@ -124,7 +124,7 @@ function init_rateBasedAdaptation(_mpd, video,bandwidth)
 						{
 							console.log("Resolution switch NYI");
 							// force a new media source with the new resolution but don't hook it in, wait until enough data has been downloaded
-							
+							// only swith the bitrate within the given resolution
 							
 						}
 				}else{		

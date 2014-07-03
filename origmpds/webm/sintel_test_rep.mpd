@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema"
+     xmlns="urn:mpeg:mpegB:schema:DASH:MPD:DIS2011"
+     xsi:schemaLocation="urn:mpeg:mpegB:schema:DASH:MPD:DIS2011"
+     profiles= "urn:mpeg:mpegB:profile:dash:isoff-basic-on-demand:cm"
+     type="OnDemand"
+     mediaPresentationDuration="PT0H9M56.46S"
+     minBufferTime="PT10.00S">   
+     <Period>
+          <Group segmentAlignmentFlag="true" mimeType="video/webm">
+			<Representation mimeType="video/webm" width="854" height="480" startWithRAP="true" bandwidth="329040" minBufferTime="15000">
+<SegmentInfo duration="PT2.00S">
+<BaseURL>http://localhost/dashjs/newContent/</BaseURL>
+<InitialisationSegmentURL sourceURL="sintel_200k.webm" range="0-4767" />
+<URL sourceURL="sintel_200k.webm" range="4768-82046" />
+<URL sourceURL="sintel_200k.webm" range="82047-162639" />
+<URL sourceURL="sintel_2400k.webm" range="749349-1281396" />
+<URL sourceURL="sintel_2400k.webm" range="1281397-2182249" />
+<URL sourceURL="sintel_200k.webm" range="329243-402937" />
+<URL sourceURL="sintel_200k.webm" range="402938-449541" />
+<URL sourceURL="sintel_1800k.webm" range="2061398-2952954" />
+<URL sourceURL="sintel_1800k.webm" range="2952955-3413464" />
+<URL sourceURL="sintel_200k.webm" range="640283-751240" />
+<URL sourceURL="sintel_200k.webm" range="751241-851920" />
+<URL sourceURL="sintel_200k.webm" range="851921-933153" />
+<URL sourceURL="sintel_200k.webm" range="933154-1055891" />
+<URL sourceURL="sintel_200k.webm" range="1055892-1154470" />
+<URL sourceURL="sintel_200k.webm" range="1154471-1248607" />
+<URL sourceURL="sintel_200k.webm" range="1248608-1354090" />
+<URL sourceURL="sintel_200k.webm" range="1354091-1478057" />
+<URL sourceURL="sintel_200k.webm" range="1478058-1556835" />
+<URL sourceURL="sintel_200k.webm" range="1556836-1639085" />
+<URL sourceURL="sintel_200k.webm" range="1639086-1713817" />
+<URL sourceURL="sintel_200k.webm" range="1713818-1786766" />
+<URL sourceURL="sintel_200k.webm" range="1786767-1863781" />
+<URL sourceURL="sintel_200k.webm" range="1863782-1927605" />
+<URL sourceURL="sintel_200k.webm" range="1927606-1996513" />
+<URL sourceURL="sintel_200k.webm" range="1996514-2049854" />
+<URL sourceURL="sintel_200k.webm" range="2049855-2100032" />
+<URL sourceURL="sintel_200k.webm" range="2100033-2145908" />
+</SegmentInfo>
+</Representation>
+          </Group>
+    </Period>
+</MPD>
