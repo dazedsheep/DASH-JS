@@ -48,7 +48,9 @@ function checkSourceError(videoTag)
 
 function sourceBufferAppend(mediaSource, id, data)
 {
-    mediaSource.sourceBuffers[id].append(data);
+ 	mediaSource.sourceBuffers[id].updating = true;
+    mediaSource.sourceBuffers[id].appendBuffer(data);
+    mediaSource.sourceBuffers[id].updating = false;
 }
 
 
